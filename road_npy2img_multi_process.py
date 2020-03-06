@@ -9,7 +9,7 @@ new_list = [0, 200, 204, 213, 209, 206, 207, 201, 203, 211, 208, 216, 217,
             226, 230, 228, 229, 233, 205, 212, 227, 223, 250, 249, 255]
 
 def func(image_name):
-    origin_npy = np.load('road05_new/' + image_name)
+    origin_npy = np.load('road05_tmp/' + image_name)
     # print(origin_npy.shape)
     tmp_npy = np.zeros(origin_npy.shape, dtype='uint8')
     final_npy = np.zeros((2710, 3384), dtype='uint8')
@@ -24,6 +24,6 @@ def func(image_name):
     assert(origin_npy.shape == (2710, 3384))
     cv2.imwrite('road05/' + image_name.replace('.npy', '.png'), origin_npy) # .astype('uint8'))
 
-home_directory = 'road05_new'
+home_directory = 'road05_tmp'
 image_list = os.listdir(home_directory)
 cvb.track_parallel_progress(func, image_list, 8)

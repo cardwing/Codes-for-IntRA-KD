@@ -12,12 +12,13 @@ Please follow [list](./list) to put ApolloScape in the desired folder. We'll cal
 ## Testing
 
 1. Obtain model predictions from trained weights:
+Download the trained [ResNet-101](https://drive.google.com/open?id=16TJW4K69uSb_ChBlbqX33aJ7LP43dhKf) and [ERFNet](https://drive.google.com/open?id=145B-xNl89R7H9qEZ6r8TzK-KSG6jf0Dp), and put them in the folder ```trained_model```.
 ```
     cd $IntRA_KD_ROOT
-    sh test_pspnet_multi_scale.sh
+    sh test_pspnet_multi_scale.sh # sh test_erfnet_multi_scale.sh
 ```
 
-The output predictions will be saved to ```road05_new``` by default.
+The output predictions will be saved to ```road05_tmp``` by default.
 
 2. Transfer TrainID to ID:
 ```
@@ -33,7 +34,7 @@ The outputs will be stored in ```road05``` by default.
     zip -r test.zip test
 ```
 
-Now, just upload test.zip to [ApolloScape online server](http://apolloscape.auto/submit.html).(The top entity dubbed "Simple_train" in the leaderboard is the teacher model, i.e., ResNet-101)
+Now, just upload test.zip to [ApolloScape online server](http://apolloscape.auto/submit.html). The trained ResNet-101 can achieve **46.63%** mIoU and trained ERFNet can achieve **43.48%** mIoU.
 
 
 4. (Optional) Produce color maps from model predictions:
@@ -48,8 +49,10 @@ Please use the [script](https://github.com/cardwing/Codes-for-Steering-Control/b
 ## Training
 ```
     cd $IntRA_KD_ROOT
-    sh train_pspnet_multi_scale.sh
+    sh train_pspnet.sh # sh train_erfnet_vanilla.sh
 ```
+
+Please make sure that you have 8 GPUs and each GPU has least 11 GB memory if you want to train ResNet-101.
 
 ## Citation
 

@@ -195,7 +195,7 @@ def validate(val_loader, model, criterion, iter, evaluator, logger=None):
         pred = np.argmax(pred, axis=3).astype(np.uint8)
         pred = pred + 1
         for cnt in range(len(img_name)):
-            np.save('road05_new/' + img_name[cnt].split('/')[5].replace('jpg', 'npy'), pred[cnt]) #split('/')[5]
+            np.save('road05_tmp/' + img_name[cnt].split('/')[5].replace('jpg', 'npy'), pred[cnt]) #split('/')[5]
 
         # measure elapsed time
         batch_time.update(time.time() - end)
@@ -204,100 +204,7 @@ def validate(val_loader, model, criterion, iter, evaluator, logger=None):
         if (i + 1) % args.print_freq == 0:
             print(('Test: [{0}/{1}]\t' 'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'.format(i, len(val_loader), batch_time=batch_time)))
 
-    print('finished, #test:{}'.format(i) )
-
-    '''for val_num in range(len(val_img_list)):
-        # target = target.cuda(async=True)
-
-        img = cv2.imread(val_img_list[val_num].replace('/home/houyuenan/', '/home/houyuenan/remote/'))
-        img_1 = cv2.resize(img, dsize=(img_w_list[1], img_h_list[1]), interpolation=cv2.INTER_LINEAR)
-        img_2 = cv2.resize(img, dsize=(img_w_list[2], img_h_list[2]), interpolation=cv2.INTER_LINEAR)
-        img = cv2.resize(img, dsize=(img_w_list[0], img_h_list[0]), interpolation=cv2.INTER_LINEAR)
-        img = torch.from_numpy(img).permute(2, 0, 1).contiguous().float()
-        img_1 = torch.from_numpy(img_1).permute(2, 0, 1).contiguous().float()
-        img_2 = torch.from_numpy(img_2).permute(2, 0, 1).contiguous().float()
-        img_scale_dict = {'0':img, '1':img_1, '2':img_2}
-
-        if val_num == 0:
-            freq_mat = np.zeros((img_h_list[0], img_w_list[0]))
-            freq_mat[:int(args.test_size / 3), :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat[:int(args.test_size / 3), (img_w_list[0] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat[(img_h_list[0] - int(args.test_size / 3)):, :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat[(img_h_list[0] - int(args.test_size / 3)):, (img_w_list[0] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
-
-            freq_mat_1 = np.zeros((img_h_list[1], img_w_list[1]))
-            freq_mat_1[:int(args.test_size / 3), :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_1[:int(args.test_size / 3), (img_w_list[1] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_1[(img_h_list[1] - int(args.test_size / 3)):, :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_1[(img_h_list[1] - int(args.test_size / 3)):, (img_w_list[1] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
-
-            freq_mat_2 = np.zeros((img_h_list[2], img_w_list[2]))
-            freq_mat_2[:int(args.test_size / 3), :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_2[:int(args.test_size / 3), (img_w_list[2] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_2[(img_h_list[2] - int(args.test_size / 3)):, :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_2[(img_h_list[2] - int(args.test_size / 3)):, (img_w_list[2] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
-        freq_scale_dict = {'0':freq_mat, '1':freq_mat_1, '2':freq_mat_2}
-        
-        for cnt in range(3):
-            input_img = img_scale_dict[str(cnt)]
-            input_img = torch.unsqueeze(input_img, dim=0)
-            input_var = torch.autograd.Variable(input_img, volatile=True)        
-            input_var_1 = input_var[:, :, :int(args.test_size / 3), :args.test_size]
-            input_var_2 = input_var[:, :, :int(args.test_size / 3), (img_w_list[cnt] - args.test_size):]
-            input_var_3 = input_var[:, :, (img_h_list[cnt] - int(args.test_size / 3)):, :args.test_size]
-            input_var_4 = input_var[:, :, (img_h_list[cnt] - int(args.test_size / 3)):, (img_w_list[cnt] - args.test_size):]
-
-            # compute output
-            output_1 = model(input_var_1)
-            output_2 = model(input_var_2)
-            output_3 = model(input_var_3)
-            output_4 = model(input_var_4)
-
-            # measure accuracy and record loss
-
-            pred_1 = output_1.data.cpu().numpy()#.transpose(0, 2, 3, 1)
-            pred_2 = output_2.data.cpu().numpy()#.transpose(0, 2, 3, 1)
-            pred_3 = output_3.data.cpu().numpy()#.transpose(0, 2, 3, 1)
-            pred_4 = output_4.data.cpu().numpy()#.transpose(0, 2, 3, 1)
-
-            pred = np.zeros((args.batch_size, 37, img_h_list[cnt], img_w_list[cnt]))
-            pred[:, :, :int(args.test_size / 3), :args.test_size] += pred_1
-            pred[:, :, :int(args.test_size / 3), (img_w_list[cnt] - args.test_size):] += pred_2
-            pred[:, :, (img_h_list[cnt] - int(args.test_size / 3)):, :args.test_size] += pred_3
-            pred[:, :, (img_h_list[cnt] - int(args.test_size / 3)):, (img_w_list[cnt] - args.test_size):] += pred_4
-
-            pred = pred / freq_scale_dict[str(cnt)]
-            if cnt == 0:
-                pred_final = np.zeros((args.batch_size, 37, img_h_list[cnt], img_w_list[cnt]))
-            if cnt > 0:
-                pred = cv2.resize(pred, dsize=(img_w_list[0], img_h_list[0]), interpolation=cv2.INTER_LINEAR)
-            pred_final += pred
-        pred = pred_final / 3.0
-        pred = pred.transpose(0, 2, 3, 1)
-
-        pred = np.argmax(pred, axis=3).astype(np.uint8)
-        pred = pred + 1
-        # for cnt in range(len(img_name)):
-        np.save('road05_new/' + val_img_list[val_num].split('/')[5].replace('jpg', 'npy'), pred) #split('/')[5]
-        # IoU.update(evaluator(pred, target.cpu().numpy()))
-        # losses.update(loss.data[0], input.size(0))
-
-        # measure elapsed time
-        batch_time.update(time.time() - end)
-        end = time.time()
-
-        if (val_num + 1) % args.print_freq == 0:
-            # acc = np.sum(np.diag(IoU.sum)) / float(np.sum(IoU.sum))
-            # mIoU = np.diag(IoU.sum) / (1e-20 + IoU.sum.sum(1) + IoU.sum.sum(0) - np.diag(IoU.sum))
-            # mIoU = np.sum(mIoU) / len(mIoU)
-            print(('Test: [{0}/{1}]\t' 'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'.format(val_num, len(val_img_list), batch_time=batch_time)))
-
-    # acc = np.sum(np.diag(IoU.sum)) / float(np.sum(IoU.sum))
-    # mIoU = np.diag(IoU.sum) / (1e-20 + IoU.sum.sum(1) + IoU.sum.sum(0) - np.diag(IoU.sum))
-    # mIoU = np.sum(mIoU) / len(mIoU)
-    # print(('Testing Results: Pixels Acc {acc:.3f}\tmIoU {mIoU:.3f} ({bestmIoU:.4f})\tLoss {loss.avg:.5f}'.format(acc=acc, mIoU=mIoU, bestmIoU=max(mIoU, best_mIoU), loss=losses)))
-    print('finished, #test:{}'.format(i) )'''
-
+    print('finished, #test:{}'.format(i))
     return mIoU
 
 
