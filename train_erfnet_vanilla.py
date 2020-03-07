@@ -7,7 +7,7 @@ import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim
 import cv2
-import utils.transforms_new as tf
+import utils.transforms_train as tf
 import numpy as np
 import models
 from models import sync_bn
@@ -81,7 +81,7 @@ def main():
 
     # Data loading code
     train_loader = torch.utils.data.DataLoader(
-        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet')(data_list=args.train_list, transform=torchvision.transforms.Compose([
+        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet_train')(data_list=args.train_list, transform=torchvision.transforms.Compose([
             tf.GroupRandomScale(size=(0.5, 0.5), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             # tf.GroupRandomScaleRatio(size=(args.train_size, args.train_size + 20, int(args.train_size * 1 / 3), int(args.train_size * 1 / 3) + 20), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             # tf.GroupRandomRotation(degree=(-10, 10), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST), padding=(input_mean, (ignore_label, ))),
@@ -91,7 +91,7 @@ def main():
         ])), batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=False, drop_last=True) # pin_memory=True
 
     val_loader = torch.utils.data.DataLoader(
-        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet')(data_list=args.val_list, transform=torchvision.transforms.Compose([
+        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet_train')(data_list=args.val_list, transform=torchvision.transforms.Compose([
             tf.GroupRandomScale(size=(0.5, 0.5), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             # tf.GroupRandomScaleRatio(size=(args.test_size, args.test_size, int(args.test_size * 1 / 3), int(args.test_size * 1 / 3)), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             tf.GroupRandomCropRatio(size=(args.train_size, int(args.train_size * 1 / 3))),

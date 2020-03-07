@@ -136,10 +136,6 @@ def validate(val_loader, model, criterion, iter, evaluator, logger=None):
     val_img_list = []
     img_w_list = [1692, 1861, 1624, 2030] #[1692, 1861, 1624, 1590, 2030]
     img_h_list = [505, 556, 485, 606] #[505, 556, 485, 475, 606]
-    #with open('/home/houyuenan/remote/ApolloScapes/list/test_img.txt', 'r') as f:
-    #    for line in f.readlines():
-    #        val_img_list.append(line.strip().split(' ')[0])
-    # switch to evaluate mode
     model.eval()
     end = time.time()
     
@@ -171,11 +167,6 @@ def validate(val_loader, model, criterion, iter, evaluator, logger=None):
             freq_mat_3[(img_h_list[3] - int(args.test_size / 3)):, :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
             freq_mat_3[(img_h_list[3] - int(args.test_size / 3)):, (img_w_list[3] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
 
-            '''freq_mat_4 = np.zeros((img_h_list[4], img_w_list[4]))
-            freq_mat_4[:int(args.test_size / 3), :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_4[:int(args.test_size / 3), (img_w_list[4] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_4[(img_h_list[4] - int(args.test_size / 3)):, :args.test_size] += np.ones((int(args.test_size / 3), args.test_size))
-            freq_mat_4[(img_h_list[4] - int(args.test_size / 3)):, (img_w_list[4] - args.test_size):] += np.ones((int(args.test_size / 3), args.test_size))'''
         freq_scale_dict = {'0':freq_mat, '1':freq_mat_1, '2':freq_mat_2, '3':freq_mat_3} #, '4':freq_mat_4}
         pred_final = np.zeros((args.batch_size, 37, img_h_list[0], img_w_list[0]))
         for cnt in range(4):#5

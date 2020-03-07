@@ -1,7 +1,7 @@
 Codes for "Inter-Region Affinity Distillation for Road Marking Segmentation"
 
 ## Requirements
-- [PyTorch 0.3.0](https://pytorch.org/get-started/previous-versions/).
+- [PyTorch 0.3.0](https://pytorch.org/get-started/previous-versions/)
 - Opencv
 - cvbase
 
@@ -12,6 +12,7 @@ Please follow [list](./list) to put ApolloScape in the desired folder. We'll cal
 ## Testing
 
 1. Obtain model predictions from trained weights:
+
 Download the trained [ResNet-101](https://drive.google.com/open?id=16TJW4K69uSb_ChBlbqX33aJ7LP43dhKf) and [ERFNet](https://drive.google.com/open?id=145B-xNl89R7H9qEZ6r8TzK-KSG6jf0Dp), and put them in the folder ```trained_model```.
 ```
     cd $IntRA_KD_ROOT
@@ -22,7 +23,7 @@ The output predictions will be saved to ```road05_tmp``` by default.
 
 2. Transfer TrainID to ID:
 ```
-    python road_npy2img_multi_process.py
+    python road_npy2img.py
 ```
 
 The outputs will be stored in ```road05``` by default. 

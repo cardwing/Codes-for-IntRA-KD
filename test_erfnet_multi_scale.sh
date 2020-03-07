@@ -1,4 +1,4 @@
-python3 -u test_erfnet_multi_scale.py ApolloScape PSPNet train test_img \
+python3 -u test_erfnet_multi_scale.py ApolloScape ERFNet train test_img \
                           --lr 0.01 \
                           --gpus 0 1 2 \
                           --npb \

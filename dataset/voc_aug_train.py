@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 
 
-class VOCAugDataSet(Dataset):
+class VOCAugDataSet_train(Dataset):
     def __init__(self, dataset_path='/home/houyuenan/ApolloScapes/list', data_list='train', transform=None):
 
         with open(os.path.join(dataset_path, data_list + '.txt')) as f:

@@ -7,7 +7,7 @@ import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim
 import cv2
-import utils.transforms_new as tf
+import utils.transforms_train as tf
 import numpy as np
 import models
 from models import sync_bn
@@ -80,7 +80,7 @@ def main():
 
     # Data loading code
     train_loader = torch.utils.data.DataLoader(
-        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet')(data_list=args.train_list, transform=torchvision.transforms.Compose([
+        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet_train')(data_list=args.train_list, transform=torchvision.transforms.Compose([
             tf.GroupRandomScale(size=(0.5, 0.5), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             # tf.GroupRandomScaleRatio(size=(args.train_size, args.train_size + 20, int(args.train_size * 1 / 3), int(args.train_size * 1 / 3) + 20), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             # tf.GroupRandomRotation(degree=(-10, 10), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST), padding=(input_mean, (ignore_label, ))),
@@ -90,7 +90,7 @@ def main():
         ])), batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=False, drop_last=True) # pin_memory=True
 
     val_loader = torch.utils.data.DataLoader(
-        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet')(data_list=args.val_list, transform=torchvision.transforms.Compose([
+        getattr(ds, args.dataset.replace("ApolloScape", "VOCAug") + 'DataSet_train')(data_list=args.val_list, transform=torchvision.transforms.Compose([
             tf.GroupRandomScale(size=(0.5, 0.5), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             # tf.GroupRandomScaleRatio(size=(args.test_size, args.test_size, int(args.test_size * 1 / 3), int(args.test_size * 1 / 3)), interpolation=(cv2.INTER_LINEAR, cv2.INTER_NEAREST)),
             tf.GroupRandomCropRatio(size=(args.train_size, int(args.train_size * 1 / 3))),
@@ -101,9 +101,6 @@ def main():
     weights = [1.0 for _ in range(37)]
     weights[0] = 0.05
     weights[36] = 0.05 # 0.05
-    '''test_class = [1,2,4,7,8,12,16,18,20,21,22,24,25,26,31,33,35]
-    for cnt in range(len(test_class)):
-        weights[test_class[cnt]] = 1.5'''
     class_weights = torch.FloatTensor(weights).cuda()
     criterion = torch.nn.NLLLoss(ignore_index=ignore_label, weight=class_weights).cuda()
     for group in policies:
@@ -164,7 +161,6 @@ def train(train_loader, model, criterion, optimizer, epoch):
         # compute output
         output = model(input_var) # output_mid
         loss = criterion(torch.nn.functional.log_softmax(output, dim=1), target_var)
-        # loss_mid = criterion(torch.nn.functional.log_softmax(output_mid, dim=1), target_var)
         loss_tot = loss # + loss_mid * 0.4
 
         # measure accuracy and record loss
@@ -211,11 +207,6 @@ def validate(val_loader, model, criterion, iter, evaluator, logger=None):
 
         # compute output
         output = model(input_var) # [0]
-
-        # compute output flip
-        # output_flip = flip(model(flip(input_var, -1)), -1)
-        # output = (output + output_flip) / 2.0
-
         loss = criterion(torch.nn.functional.log_softmax(output, dim=1), target_var)
 
         # measure accuracy and record loss

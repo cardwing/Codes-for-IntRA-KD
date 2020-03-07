@@ -2,7 +2,7 @@ import argparse
 parser = argparse.ArgumentParser(description="PyTorch implementation of Semantic Segmentation")
 
 parser.add_argument('dataset', type=str, choices=['VOCAug', 'VOC2012', 'COCO', 'Cityscapes', 'ApolloScape'])
-parser.add_argument('method', type=str, choices=['FCN', 'DeepLab', 'DeepLab3', 'PSPNet'])
+parser.add_argument('method', type=str, choices=['FCN', 'DeepLab', 'DeepLab3', 'PSPNet', 'ERFNet'])
 parser.add_argument('train_list', type=str)
 parser.add_argument('val_list', type=str)
 
