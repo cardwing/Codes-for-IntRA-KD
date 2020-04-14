@@ -1,4 +1,4 @@
-Codes for "Inter-Region Affinity Distillation for Road Marking Segmentation"
+Codes for ["Inter-Region Affinity Distillation for Road Marking Segmentation"](https://arxiv.org/abs/2004.05304)
 
 ## Requirements
 - [PyTorch 0.3.0](https://pytorch.org/get-started/previous-versions/)
@@ -59,7 +59,12 @@ Please make sure that you have 8 GPUs and each GPU has least 11 GB memory if you
 
 If you use the codes, please cite the following publication:
 ```
- 
+@inproceedings{hou2020interregion,
+  title     = {Inter-Region Affinity Distillation for Road Marking Segmentation},
+  author    = {Yuenan Hou, Zheng Ma, Chunxiao Liu, Tak-Wai Hui, and Chen Change Loy},
+  booktitle = {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2020},
+} 
 ```
 
 ## Acknowledgement
